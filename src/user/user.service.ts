@@ -8,6 +8,7 @@ import {
 } from './dto/create-accout.dto';
 import { LoginInput, LoginOutput } from './dto/login.dto';
 import { JwtService } from 'src/jwt/jwt.service';
+import { UpdateProfileInput } from './dto/update-profile.dto';
 
 @Injectable()
 export class UserService {
@@ -71,5 +72,19 @@ export class UserService {
   async findById(id: number): Promise<User> {
     const user = this.users.findOne({ where: { id } });
     return user;
+  }
+
+  async updateProfile(
+    userId: number,
+    { email, password }: UpdateProfileInput,
+  ): Promise<User> {
+    const user = await this.users.findOne({ where: { id: userId } });
+    if (email) {
+      user.email = email;
+    }
+    if (password) {
+      user.password = password;
+    }
+    return this.users.save(user);
   }
 }
