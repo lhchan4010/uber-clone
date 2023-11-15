@@ -14,28 +14,23 @@ import {
   UpdateProfileInput,
   UpdateProfileOutput,
 } from './dto/update-profile.dto';
+import { VerifyEmailInput, VerifyEmailOutput } from './dto/verify-email.dto';
 
 @Resolver()
 export class UserResolver {
   constructor(private readonly userService: UserService) {}
 
   @Mutation(() => CreateAccountOutput)
-  async createAccount(
+  createAccount(
     @Args('input') createAccountInput: CreateAccountInput,
   ): Promise<CreateAccountOutput> {
-    try {
-      const result = await this.userService.createAccount(createAccountInput);
-      return result;
-    } catch (error) {
-      return { ok: false, error: "Couldn't create account" };
-    }
+    return this.userService.createAccount(createAccountInput);
   }
 
   @Mutation(() => LoginOutput)
   async login(@Args('input') loginInput: LoginInput): Promise<LoginOutput> {
     try {
-      const result = await this.userService.login(loginInput);
-      return result;
+      return await this.userService.login(loginInput);
     } catch (error) {
       return { ok: false, error: "Couldn't Login" };
     }
@@ -49,19 +44,11 @@ export class UserResolver {
 
   @UseGuards(AuthGuard)
   @Query(() => GetProfileOutput)
-  async getProfile(
+  getProfile(
     @Args() getProfileArgs: GetProfileArgs,
   ): Promise<GetProfileOutput> {
-    try {
-      const user = await this.userService.findById(getProfileArgs.userId);
-      console.log(user);
-      if (!user) {
-        return { ok: false, error: 'User not found' };
-      }
-      return { ok: true, user };
-    } catch (error) {
-      return { ok: false, error: 'fail to find profile' };
-    }
+    console.log('-------------', getProfileArgs);
+    return this.userService.findById(getProfileArgs.userId);
   }
 
   @UseGuards(AuthGuard)
@@ -70,17 +57,13 @@ export class UserResolver {
     @AuthUser() authUser: User,
     @Args('input') updateProfileInput: UpdateProfileInput,
   ): Promise<UpdateProfileOutput> {
-    try {
-      const user = await this.userService.updateProfile(
-        authUser.id,
-        updateProfileInput,
-      );
-      if (!user) {
-        return { ok: false, error: 'fail to update Profile' };
-      }
-      return { ok: true };
-    } catch (error) {
-      return { ok: false, error: 'fail to update Profile' };
-    }
+    return this.userService.updateProfile(authUser.id, updateProfileInput);
+  }
+
+  @Mutation(() => VerifyEmailOutput)
+  verifyEmail(
+    @Args('input') verifyEmailInput: VerifyEmailInput,
+  ): Promise<VerifyEmailOutput> {
+    return this.userService.verifyEmail(verifyEmailInput);
   }
 }

@@ -13,6 +13,7 @@ import { User } from './user/entities/user.entity';
 import { JwtModule } from './jwt/jwt.module';
 import { jwtMiddleware } from './jwt/jwt.middleware';
 import { AuthModule } from './auth/auth.module';
+import { Veryfication } from './user/entities/veryfication.entity';
 @Module({
   imports: [
     ConfigModule.forRoot({
@@ -41,7 +42,7 @@ import { AuthModule } from './auth/auth.module';
       database: process.env.DB_NAME,
       synchronize: process.env.NODE_ENV !== 'prod',
       logging: process.env.NODE_ENV !== 'prod',
-      entities: [Restaurant, User],
+      entities: [Restaurant, User, Veryfication],
       subscribers: [],
       migrations: [],
     }),
