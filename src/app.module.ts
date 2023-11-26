@@ -6,7 +6,7 @@ import { ApolloDriver, ApolloDriverConfig } from '@nestjs/apollo';
 import { ApolloServerPluginLandingPageLocalDefault } from '@apollo/server/plugin/landingPage/default';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { ConfigModule } from '@nestjs/config';
-import { Restaurant } from './restaurants/entities/restaurants.entities';
+import { Restaurant } from './restaurants/entities/restaurant.entity';
 import { UserModule } from './user/user.module';
 import { CommonModule } from './common/common.module';
 import { User } from './user/entities/user.entity';
@@ -14,6 +14,7 @@ import { JwtModule } from './jwt/jwt.module';
 import { jwtMiddleware } from './jwt/jwt.middleware';
 import { AuthModule } from './auth/auth.module';
 import { Veryfication } from './user/entities/veryfication.entity';
+import { Category } from './restaurants/entities/cetegory.entity';
 @Module({
   imports: [
     ConfigModule.forRoot({
@@ -42,7 +43,7 @@ import { Veryfication } from './user/entities/veryfication.entity';
       database: process.env.DB_NAME,
       synchronize: process.env.NODE_ENV !== 'prod',
       logging: process.env.NODE_ENV !== 'prod',
-      entities: [Restaurant, User, Veryfication],
+      entities: [User, Veryfication, Restaurant, Category],
       subscribers: [],
       migrations: [],
     }),
@@ -53,6 +54,7 @@ import { Veryfication } from './user/entities/veryfication.entity';
       plugins: [ApolloServerPluginLandingPageLocalDefault()],
       context: ({ req }) => ({ user: req['user'] }),
     }),
+    AuthModule,
     RestaurantsModule,
     UserModule,
     CommonModule,

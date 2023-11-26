@@ -5,14 +5,16 @@ import {
   registerEnumType,
 } from '@nestjs/graphql';
 import { CoreEntity } from 'src/common/entities/core.entity';
-import { BeforeInsert, BeforeUpdate, Column, Entity } from 'typeorm';
+import { BeforeInsert, BeforeUpdate, Column, Entity, OneToMany } from 'typeorm';
 import * as bcrypt from 'bcrypt';
 import { InternalServerErrorException } from '@nestjs/common';
+import { Restaurant } from 'src/restaurants/entities/restaurant.entity';
+import { IsEnum } from 'class-validator';
 
-enum UserRole {
-  Client,
-  Owner,
-  Delivery,
+export enum UserRole {
+  Client = 'Client',
+  Owner = 'Owner',
+  Delivery = 'Delivery',
 }
 
 registerEnumType(UserRole, { name: 'UserRole' });
@@ -31,11 +33,16 @@ export class User extends CoreEntity {
 
   @Column({ type: 'enum', enum: UserRole })
   @Field(() => UserRole)
+  @IsEnum(UserRole)
   role: UserRole;
 
   @Column({ default: 'false' })
   @Field(() => Boolean)
   isVerified: boolean;
+
+  @Field(() => [Restaurant], { nullable: true })
+  @OneToMany(() => Restaurant, (restaurant) => restaurant.owner)
+  restaurants: Restaurant[];
 
   @BeforeInsert()
   @BeforeUpdate()

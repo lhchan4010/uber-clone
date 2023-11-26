@@ -15,6 +15,7 @@ import {
   UpdateProfileOutput,
 } from './dto/update-profile.dto';
 import { VerifyEmailInput, VerifyEmailOutput } from './dto/verify-email.dto';
+import { Role } from 'src/auth/role.decorator';
 
 @Resolver()
 export class UserResolver {
@@ -37,22 +38,21 @@ export class UserResolver {
   }
 
   @Query(() => User)
-  @UseGuards(AuthGuard)
+  @Role(['Any'])
   me(@AuthUser() authUser: User) {
     return authUser;
   }
 
-  @UseGuards(AuthGuard)
   @Query(() => GetProfileOutput)
+  @Role(['Any'])
   getProfile(
     @Args() getProfileArgs: GetProfileArgs,
   ): Promise<GetProfileOutput> {
-    console.log('-------------', getProfileArgs);
     return this.userService.findById(getProfileArgs.userId);
   }
 
-  @UseGuards(AuthGuard)
   @Mutation(() => UpdateProfileOutput)
+  @Role(['Any'])
   async updateProfile(
     @AuthUser() authUser: User,
     @Args('input') updateProfileInput: UpdateProfileInput,
