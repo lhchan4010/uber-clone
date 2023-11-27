@@ -6,9 +6,7 @@ import {
 } from './dto/create-accout.dto';
 import { LoginInput, LoginOutput } from './dto/login.dto';
 import { User } from './entities/user.entity';
-import { UseGuards } from '@nestjs/common';
 import { AuthUser } from 'src/auth/auth-user.decorator';
-import { AuthGuard } from 'src/auth/auth.guard';
 import { GetProfileArgs, GetProfileOutput } from './dto/user-profile.dto';
 import {
   UpdateProfileInput,
